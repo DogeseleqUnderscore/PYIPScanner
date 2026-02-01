@@ -33,7 +33,7 @@ def send_wol_magic_packet(mac_address: str, broadcast_ip: str = '255.255.255.255
 
 
 class WOLButtonServer:
-    def __init__(self, host='127.0.0.1', port=8888):
+    def __init__(self, host='127.0.0.1', port=2):
         self.host = host
         self.port = port
         self.server = None
@@ -116,23 +116,30 @@ class WOLButtonServer:
             print_success(f"WOL packet sent to {mac_address}!")
             self.send_html_response(
                 client_socket,
-                100,
+                200,
                 "")
         else:
             print_error(f"Failed to send magic packet to {mac_address}!")
             self.send_response(client_socket, 500, "Failed to send WOL packet")
 
     def serve_dashboard(self, client_socket):
-        html = f""""""
+        html = f"""<!DOCTYPE html>
+        <html>
+        <head><title>:)</title></head>
+        <body>
+        <h1>Wake-on-LAN</h1>
+        <p>Send WOL packet: <code>http://localhost:{self.port}/MAC_ADDRESS/BROADCAST_IP</code></p>
+        <p>Example: <code>http://localhost:{self.port}/AA:BB:CC:DD:EE:FF/255.255.255.255</code></p>
+        </body>
+        </html>"""
 
         self.send_html_response(client_socket, 200, html)
 
     def send_response(self, client_socket, status_code, message):
-        response = f"HTTP/1.1 308 Permanent Redirect\r\n"
-        response += "Location: https://google.com/\r\n"
+        response = f"HTTP/1.1 200 OK\r\n"
         response += f"Content-Length: 0\r\n"
 
-        response += "\r\n"
+        response += "Sent!"
 
         try:
             client_socket.send(response.encode())

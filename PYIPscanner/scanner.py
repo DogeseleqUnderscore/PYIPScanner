@@ -546,7 +546,10 @@ def main():
 def scan():
     print(NAME)
     main()
-    input()
+    try:
+        input()
+    except:
+        pass
 
 if __name__ == "__main__":
     scan()
