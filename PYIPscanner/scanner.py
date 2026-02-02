@@ -17,6 +17,7 @@ DEFAULT_PORTS = [443, 80, 8080, 9443, 8123, 8008, 8888, 8088, 5000, 3000, 22, 21
 NAME = f"{CSI}1;33mPY{RESET}{CSI}35mIP{RESET} {CSI}1mscanner v2.1{RESET}\n"
 
 vendor_disabled=False
+short_terminal=False
 
 
 @dataclass
@@ -366,6 +367,7 @@ def export_to_csv(results: List[dict], filepath: str, field_manager: FieldManage
 
 def main():
     global vendor_disabled
+    global short_terminal
 
     ap = argparse.ArgumentParser(description=NAME)
     group = ap.add_mutually_exclusive_group(required=False)
@@ -379,7 +381,7 @@ def main():
     ap.add_argument('--workers', help='Max concurrent IP workers', type=int, default=200)
     ap.add_argument('--ignore-types', help='Comma separated types to ignore: host,alive,dead', default=None)
     ap.add_argument('--export-csv', help='Export results to CSV file', default=None)
-
+    ap.add_argument('--short-terminal', action='store_true', help='For short terminals, ')
     ap.add_argument('--skip-ports', action='store_true', help='Skip port scanning')
     ap.add_argument('--skip-vendor', action='store_true', help='Skips vendor from MAC address scraping')
 
@@ -436,10 +438,6 @@ def main():
         print_info(f"Port scanning {CSI}1mdisabled{RESET} (--skip-ports)", False)
         ports = None
 
-
-
-
-
     ignore_set = set()
     if args.ignore_types:
         requested = {x.strip().lower() for x in args.ignore_types.split(',') if x.strip()}
@@ -449,6 +447,10 @@ def main():
             print_warn(f"Ignoring invalid types in --ignore-types: {', '.join(sorted(invalid))}")
         ignore_set = requested & allowed
         print_info(f"Ignoring types: {', '.join(sorted(ignore_set))}", False)
+
+    if args.short_terminal:
+        print_info("Using short terminal mode.")
+        short_terminal=True
 
     total = len(ip_list)
     ip_width = max(len(ip) for ip in ip_list)
@@ -518,10 +520,19 @@ def main():
 
     #results
     print("\n\n")
-    for thing in result:
-        print(thing)
+    if short_terminal:
+        for thing in result:
+            splitted = thing.split(" | ")
+            print(splitted[0].replace("-", ""))
+            for a in splitted:
+                if len(a) < 150:
+                    print(a)
+            print("\n\n")
+    else:
+        for thing in result:
+            print(thing)
 
-    if separator_length > 0:
+    if separator_length > 0 and not short_terminal:
         print(f"{'-' * separator_length}")
 
     #summary
