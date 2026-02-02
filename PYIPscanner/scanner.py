@@ -1,7 +1,5 @@
-from MAClookup import get_vendor_from_mac_address_no_this_is_not_made_by_chatgpt_trust_me
+from MAClookup import get_vendor_from_mac_address_no_this_is_not_made_by_chatgpt_trust_me, preload_database
 from typing import List, Optional, Tuple, Callable
-
-from PYIPscanner.MAClookup import preload_database
 from WOL import make_wol_link, WOLButtonServer
 from dataclasses import dataclass
 import concurrent.futures
