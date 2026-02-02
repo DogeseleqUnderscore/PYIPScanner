@@ -1,6 +1,7 @@
 from MAClookup import get_vendor_from_mac_address_no_this_is_not_made_by_chatgpt_trust_me, preload_database
 from typing import List, Optional, Tuple, Callable
 from WOL import make_wol_link, WOLButtonServer
+from CLIhelpers import pass_st_var
 from dataclasses import dataclass
 import concurrent.futures
 from fileHelpers import *
@@ -451,6 +452,7 @@ def main():
     if args.short_terminal:
         print_info("Using short terminal mode.")
         short_terminal=True
+        pass_st_var()
 
     total = len(ip_list)
     ip_width = max(len(ip) for ip in ip_list)

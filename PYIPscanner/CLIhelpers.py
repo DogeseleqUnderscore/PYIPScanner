@@ -46,15 +46,23 @@ def print_loading_bar(value, max_value, msg, width=130):
 
     print(f"\r {bar} {percent:6.2f}% {msg}", end="", flush=True)
 
+st=False
+def pass_st_var():
+    global st
+    st=True
+
 def truncate(text: str, width: int) -> str:
-    if width <= 0:
-        return ''
-    text = str(text)
-    if len(text) <= width:
+    if not st:
+        if width <= 0:
+            return ''
+        text = str(text)
+        if len(text) <= width:
+            return text
+        if width <= 3:
+            return text[:width]
+        return text[: width - 3] + '...'
+    else:
         return text
-    if width <= 3:
-        return text[:width]
-    return text[: width - 3] + '...'
 
 def strip_ansi(text: str) -> str:
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')

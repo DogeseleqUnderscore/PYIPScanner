@@ -16,7 +16,7 @@ filepath = "mac_vendors.json"
 
 PLDB = None #PreLoadedDataBase ; funky solution
 def preload_database():
-    print_info("Preloading database...")
+    print_info("Preloading MAC address database...")
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             global PLDB
