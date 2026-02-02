@@ -7,32 +7,41 @@ filepath = "mac_vendors.json"
                                             VERY IMPORTANT!!!!!!!!
     The database that i am using here comes from maclookup.app website (https://maclookup.app/downloads/json-database),
     And is modified to be smaller (~2MB instead od ~6MB but has the same vendors), it instead of having JSON with "JSONS"
-    that have the prexix, vendor and other things, only has the prefix as key and vendor as value.
+    that have the prefix, vendor and other things, only has the prefix as key and vendor as value.
     
     The date that this database comes from is 31.1.2025 (in DD-MM-YYYY format).
     
     Even if the website doesn't provide a license, i will still include this message.
 """
 
+PLDB = None #PreLoadedDataBase ; funky solution
+def preload_database():
+    print_info("Preloading database...")
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            global PLDB
+            PLDB = json.load(f)
+        print_success("Database loaded!")
+    except FileNotFoundError:
+        print_error("Database file('mac_vendors.json') is not in the working directory.")
+
 def _get_vendor_from_mac(macaddr):
     prefix_MA_L = macaddr[:8]
     prefix_MA_M = macaddr[:10]
     prefix_MA_S = macaddr[:13]
 
-    with open(filepath, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
+    if PLDB is not None:
         try:
-            return data[prefix_MA_S]
+            return PLDB[prefix_MA_S]
         except KeyError:
             try:
-                return data[prefix_MA_M]
+                return PLDB[prefix_MA_M]
             except KeyError:
                 try:
-                    return data[prefix_MA_L]
+                    return PLDB[prefix_MA_L]
                 except KeyError:
                     return "[N/D]"
-
+    return f"{RESET}{CSI}91m[err 2]{RESET}"
 
 
 def get_vendor_from_mac_address_no_this_is_not_made_by_chatgpt_trust_me(macaddr: str):

@@ -1,5 +1,7 @@
 from MAClookup import get_vendor_from_mac_address_no_this_is_not_made_by_chatgpt_trust_me
 from typing import List, Optional, Tuple, Callable
+
+from PYIPscanner.MAClookup import preload_database
 from WOL import make_wol_link, WOLButtonServer
 from dataclasses import dataclass
 import concurrent.futures
@@ -427,8 +429,10 @@ def main():
 
 
     if args.skip_vendor:
-        print_info(f"Vendor scraping {CSI}1mdisabled{RESET} (--skip-vendor)", False)
+        print_info(f"Vendor {CSI}1mdisabled{RESET} (--skip-vendor)", False)
         vendor_disabled = True
+    else:
+        preload_database()
 
     if args.skip_ports:
         print_info(f"Port scanning {CSI}1mdisabled{RESET} (--skip-ports)", False)
