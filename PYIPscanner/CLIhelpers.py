@@ -31,7 +31,17 @@ def status_alive():
 def status_host():
     return f"{CSI}1;92m\u25A0{RESET}"
 
+
+
+
+st=False
+def pass_st_var():
+    global st
+    st=True
+
 def print_loading_bar(value, max_value, msg, width=130):
+    if st:
+        width=30
     if max_value <= 0:
         raise ValueError("max_value must be > 0")
 
@@ -46,11 +56,6 @@ def print_loading_bar(value, max_value, msg, width=130):
 
     print(f"\r {bar} {percent:6.2f}% {msg}", end="", flush=True)
 
-st=False
-def pass_st_var():
-    global st
-    st=True
-
 def truncate(text: str, width: int) -> str:
     if not st:
         if width <= 0:
@@ -63,6 +68,9 @@ def truncate(text: str, width: int) -> str:
         return text[: width - 3] + '...'
     else:
         return text
+
+
+
 
 def strip_ansi(text: str) -> str:
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
